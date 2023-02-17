@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:note_book_app/pages/sign_in_page.dart';
 import '../../database_helper/database_helper.dart';
 import '../../models/notebook.dart';
 import '../../pages/notebook_page.dart';
@@ -91,17 +92,18 @@ class NotebookProvider extends ChangeNotifier {
       if (isAdded == true) {
         resetNotebook();
         fetchNoteListCtl();
-      } else if (index == 2) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const RegistrationPage(),
-          ),
-        );
       }
-      notifyListeners();
-    }
 
+    }
+    else if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const RegistrationPage(),
+        ),
+      );
+    }
+    notifyListeners();
   }
   Future<void> deleteListTileCtl(index) async {
     int id = notebook[index].id!;
