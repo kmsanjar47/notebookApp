@@ -9,6 +9,17 @@ class NotebookProvider extends ChangeNotifier {
   List<Notebook>? _notebook;
   DatabaseHelper? _db;
   int _bottomNavIndex = 0;
+  String _currentDate = DateTime.now().toString().substring(0, 11);
+  TextEditingController _userDetailsTextCtl = TextEditingController();
+
+  String get currentDate => _currentDate!;
+
+  set currentDate(String value) {
+    _currentDate = value;
+  }
+
+  TextEditingController _userTitleTextCtl = TextEditingController();
+
 
   List<Notebook> get notebook => _notebook!;
 
@@ -27,9 +38,45 @@ class NotebookProvider extends ChangeNotifier {
   set notebook(List<Notebook> value) {
     _notebook = value;
   }
+  TextEditingController get userDetailsTextCtl => _userDetailsTextCtl;
+
+  set userDetailsTextCtl(TextEditingController value) {
+    _userDetailsTextCtl = value;
+  }
+
+  TextEditingController get userTitleTextCtl => _userTitleTextCtl;
+
+  set userTitleTextCtl(TextEditingController value) {
+    _userTitleTextCtl = value;
+  }
 
   void resetNotebook() {
     notebook = [];
+    notifyListeners();
+  }
+  void noteAdder(BuildContext context) async {
+    try {
+      Notebook mNotebook = Notebook(
+          title: userTitleTextCtl!.text,
+          description: userDetailsTextCtl!.text,
+          timeadded: currentDate);
+      int isAdded = await _db!.insertNote(mNotebook);
+
+      if (isAdded > 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Note Added Succesfully"),
+          ),
+        );
+        Navigator.pop(context,true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Error!! Can't add note right now"),
+        ));
+      }
+    } catch (error) {
+      print(error.toString());
+    }
   }
 
   void fetchNoteListCtl() async {
@@ -76,4 +123,6 @@ class NotebookProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
 }
