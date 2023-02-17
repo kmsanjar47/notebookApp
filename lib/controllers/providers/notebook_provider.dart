@@ -11,6 +11,7 @@ class NotebookProvider extends ChangeNotifier {
   int bottomNavIndex = 0;
   String currentDate = DateTime.now().toString().substring(0, 11);
   TextEditingController userDetailsTextCtl = TextEditingController();
+  List<Notebook>? noteList;
 
   TextEditingController userTitleTextCtl = TextEditingController();
 
@@ -28,6 +29,16 @@ class NotebookProvider extends ChangeNotifier {
 
   void resetNotebook() {
     notebook = [];
+    notifyListeners();
+  }
+  getNoteList(id) async {
+    try {
+      List<Notebook> mNoteList = await _db!.getSpecificNote(id);
+      noteList = mNoteList;
+
+    } catch (error) {
+      print(error);
+    }
     notifyListeners();
   }
 

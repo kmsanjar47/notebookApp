@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:note_book_app/controllers/providers/authentication_provider.dart';
 import 'package:note_book_app/database_helper/database_helper.dart';
 import 'package:note_book_app/models/user_info.dart';
 import 'package:note_book_app/pages/sign_in_page.dart';
-import 'package:provider/provider.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);

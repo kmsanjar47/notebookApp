@@ -4,7 +4,7 @@ import 'package:note_book_app/controllers/providers/notebook_provider.dart';
 import 'package:note_book_app/models/user_info.dart';
 import 'package:note_book_app/pages/expanded_note_page.dart';
 import 'package:provider/provider.dart';
-import '../util/utils.dart';
+import '../utils/utils.dart';
 
 class HomePage extends StatefulWidget {
   final UserInfo? userInfoData;

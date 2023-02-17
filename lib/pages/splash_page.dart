@@ -4,7 +4,7 @@ import 'package:note_book_app/database_helper/database_helper.dart';
 import 'package:note_book_app/models/user_info.dart';
 import 'package:note_book_app/pages/home_page.dart';
 import 'package:note_book_app/pages/sign_in_page.dart';
-import '../util/shared_pref.dart';
+import '../utils/shared_pref.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
