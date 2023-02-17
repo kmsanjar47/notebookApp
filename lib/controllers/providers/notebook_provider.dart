@@ -4,24 +4,16 @@ import '../../models/notebook.dart';
 import '../../pages/notebook_page.dart';
 import '../../pages/registration_page.dart';
 
-
 class NotebookProvider extends ChangeNotifier {
-  List<Notebook>? _notebook;
+  List<Notebook> _notebook = [];
   DatabaseHelper? _db;
-  int _bottomNavIndex = 0;
-  String _currentDate = DateTime.now().toString().substring(0, 11);
-  TextEditingController _userDetailsTextCtl = TextEditingController();
+  int bottomNavIndex = 0;
+  String currentDate = DateTime.now().toString().substring(0, 11);
+  TextEditingController userDetailsTextCtl = TextEditingController();
 
-  String get currentDate => _currentDate!;
+  TextEditingController userTitleTextCtl = TextEditingController();
 
-  set currentDate(String value) {
-    _currentDate = value;
-  }
-
-  TextEditingController _userTitleTextCtl = TextEditingController();
-
-
-  List<Notebook> get notebook => _notebook!;
+  List<Notebook> get notebook => _notebook;
 
   DatabaseHelper get db => _db!;
 
@@ -29,38 +21,34 @@ class NotebookProvider extends ChangeNotifier {
     _db = value;
   }
 
-  int get bottomNavIndex => _bottomNavIndex;
-
-  set bottomNavIndex(int value) {
-    _bottomNavIndex = value;
-  }
-
   set notebook(List<Notebook> value) {
     _notebook = value;
-  }
-  TextEditingController get userDetailsTextCtl => _userDetailsTextCtl;
-
-  set userDetailsTextCtl(TextEditingController value) {
-    _userDetailsTextCtl = value;
-  }
-
-  TextEditingController get userTitleTextCtl => _userTitleTextCtl;
-
-  set userTitleTextCtl(TextEditingController value) {
-    _userTitleTextCtl = value;
   }
 
   void resetNotebook() {
     notebook = [];
     notifyListeners();
   }
+
+  void datePicker(BuildContext context) {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2050),
+    ).then((value) {
+      currentDate = value.toString().substring(0, 11);
+      notifyListeners();
+    });
+  }
+
   void noteAdder(BuildContext context) async {
     try {
       Notebook mNotebook = Notebook(
-          title: userTitleTextCtl!.text,
-          description: userDetailsTextCtl!.text,
+          title: userTitleTextCtl.text,
+          description: userDetailsTextCtl.text,
           timeadded: currentDate);
-      int isAdded = await _db!.insertNote(mNotebook);
+      int isAdded = await db.insertNote(mNotebook);
 
       if (isAdded > 0) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -68,7 +56,7 @@ class NotebookProvider extends ChangeNotifier {
             content: Text("Note Added Succesfully"),
           ),
         );
-        Navigator.pop(context,true);
+        Navigator.pop(context, true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Error!! Can't add note right now"),
@@ -84,7 +72,7 @@ class NotebookProvider extends ChangeNotifier {
     try {
       List<Notebook> mNotebook = await _db!.fetchNoteList();
       if (mNotebook.isNotEmpty) {
-        _notebook = mNotebook;
+        notebook = mNotebook;
       }
     } catch (error) {
       print(error.toString());
@@ -103,9 +91,10 @@ class NotebookProvider extends ChangeNotifier {
       if (isAdded == true) {
         resetNotebook();
         fetchNoteListCtl();
-      }
-      else if (index == 2) {
-        Navigator.push(context, MaterialPageRoute(
+      } else if (index == 2) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
             builder: (context) => const RegistrationPage(),
           ),
         );
@@ -113,16 +102,14 @@ class NotebookProvider extends ChangeNotifier {
       notifyListeners();
     }
 
-    Future<void> deleteListTileCtl(index) async {
-      int id = _notebook![index].id!;
-      int isDeleted = await _db!.deleteNote(id);
-      if (isDeleted > 0) {
-        resetNotebook();
-        fetchNoteListCtl();
-      }
-      notifyListeners();
-    }
   }
-
-
+  Future<void> deleteListTileCtl(index) async {
+    int id = notebook[index].id!;
+    int isDeleted = await db.deleteNote(id);
+    if (isDeleted > 0) {
+      resetNotebook();
+      fetchNoteListCtl();
+    }
+    notifyListeners();
+  }
 }
